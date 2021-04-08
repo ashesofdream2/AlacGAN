@@ -1,4 +1,4 @@
-train_root: ../datasets/Colorize_C
+train_root: ../input/sketch-gan/
 val_root: ../datasets/lineart
 
 workers: 4

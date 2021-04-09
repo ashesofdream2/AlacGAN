@@ -10,6 +10,8 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 from PIL import Image
 
+img_size = 256
+
 IMG_EXTENSIONS = [
     '.jpg', '.JPG', '.jpeg', '.JPEG',
     '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',
@@ -86,7 +88,7 @@ class ImageFolder(data.Dataset):
     def __getitem__(self, index):
         fname = self.imgs[index]  # random.randint(1, 3
         Simg = sketch_loader(os.path.join(self.root, fname))
-        Simg = resize_by(Simg, 512.0)
+        Simg = resize_by(Simg, img_size )
         if random.random() < 0.5:
             Simg = Simg.transpose(Image.FLIP_LEFT_RIGHT)
         Simg = self.stransform(Simg)
@@ -101,7 +103,7 @@ def CreateDataLoader(config):
     random.seed(config.seed)
 
     STrans = transforms.Compose([
-        RandomCrop(512),
+        RandomCrop( img_size ),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])

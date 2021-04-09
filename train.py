@@ -20,8 +20,6 @@ from data.eval import CreateDataLoader as val_loader
 from utils import create_logger, save_checkpoint, load_state, get_scheduler, AverageMeter, calculate_fid
 from models.standard import *
 
-%tensorboard --logdir ./
-
 parser = argparse.ArgumentParser(description='PyTorch Colorization Training')
 
 parser.add_argument('--config', default='experiments/origin/config.yaml')

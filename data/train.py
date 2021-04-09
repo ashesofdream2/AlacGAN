@@ -70,7 +70,7 @@ class RandomSizedCrop(object):
             area = img.size[0] * img.size[1]
             target_area = random.uniform(0.9, 1.) * area
             aspect_ratio = random.uniform(7. / 8, 8. / 7)
-\            w = int(round(math.sqrt(target_area * aspect_ratio)))
+            w = int(round(math.sqrt(target_area * aspect_ratio)))
             h = int(round(math.sqrt(target_area / aspect_ratio)))
 
             if random.random() < 0.5:

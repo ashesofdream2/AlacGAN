@@ -1,5 +1,5 @@
-train_root: ../input/sketch-gan
-val_root: ../input/sketch-gan/illustrations_resized_final/illustrations_resized_final
+train_root: ../../input/sketch-gan
+val_root: ../../input/sketch-gan/illustrations_resized_final/illustrations_resized_final
 
 workers: 2
 batch_size: 4

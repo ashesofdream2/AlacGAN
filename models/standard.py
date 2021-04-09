@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as M
 
-VGG16_PATH = '../input/sketch-gan/vgg16-397923af.pth'
+VGG16_PATH = '../input/pytorch-model-zoo/vgg16-397923af.pth'
 I2V_PATH = '../input/sketch-gan/i2v.pth'
 
 

@@ -261,7 +261,7 @@ def CreateDataLoader(config):
         transforms.Scale(config.image_size, Image.BICUBIC),
         transforms.ToTensor(),
         transforms.Lambda(jitter),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        transforms.Normalize((0.5), (0.5))
     ])
 
     train_dataset = ImageFolder(root=config.train_root, transform=CTrans, vtransform=VTrans, stransform=STrans)

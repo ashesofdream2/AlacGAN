@@ -70,8 +70,7 @@ class RandomSizedCrop(object):
             area = img.size[0] * img.size[1]
             target_area = random.uniform(0.9, 1.) * area
             aspect_ratio = random.uniform(7. / 8, 8. / 7)
-
-            w = int(round(math.sqrt(target_area * aspect_ratio)))
+\            w = int(round(math.sqrt(target_area * aspect_ratio)))
             h = int(round(math.sqrt(target_area / aspect_ratio)))
 
             if random.random() < 0.5:
@@ -99,7 +98,7 @@ def is_image_file(filename):
 def make_dataset(root):
     images = []
 
-    for _, __, fnames in sorted(os.walk(os.path.join(root, 'color'))):
+    for _, __, fnames in sorted(os.walk(os.path.join(root, 'illustrations_resized_final/illustrations_resized_final'))):
         for fname in fnames:
             if is_image_file(fname):
                 images.append(fname)
@@ -224,8 +223,8 @@ class ImageFolder(data.Dataset):
 
     def __getitem__(self, index):
         fname = self.imgs[index]
-        Cimg = color_loader(os.path.join(self.root, 'color', fname))
-        Simg = sketch_loader(os.path.join(self.root, str(random.randint(0, 2)), fname))
+        Cimg = color_loader(os.path.join(self.root, 'illustrations_resized/illustrations_resized/', fname))
+        Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
         Cimg, Simg = RandomCrop(512)(Cimg, Simg)
         if random.random() < 0.5:
             Cimg, Simg = Cimg.transpose(Image.FLIP_LEFT_RIGHT), Simg.transpose(Image.FLIP_LEFT_RIGHT)

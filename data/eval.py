@@ -10,7 +10,7 @@ import torch.utils.data as data
 import torchvision.transforms as transforms
 from PIL import Image
 
-img_size = 256
+img_size = 512
 
 IMG_EXTENSIONS = [
     '.jpg', '.JPG', '.jpeg', '.JPEG',

@@ -1,11 +1,11 @@
-train_root: ../input/sketch-gan/
+train_root: ../input/sketch-gan
 val_root: ../datasets/lineart
 
-workers: 4
-batch_size: 4
-image_size: 512
+workers: 2
+batch_size: 16
+image_size: 256
 
-val_freq: 5000
+val_freq: 1000
 print_freq: 1
 print_img_freq: 100
 

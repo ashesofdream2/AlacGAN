@@ -2,7 +2,7 @@ train_root: /kaggle/input/sketch-gan
 val_root: /kaggle/input/sketch-gan/illustrations_resized_final/illustrations_resized_final
 
 workers: 2
-batch_size: 32
+batch_size: 64
 image_size: 256
 
 val_freq: 1000

@@ -224,7 +224,10 @@ class ImageFolder(data.Dataset):
     def __getitem__(self, index):
         fname = self.imgs[index]
         Cimg = color_loader(os.path.join(self.root, 'illustrations_resized/illustrations_resized/', fname))
-        Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
+        if random.random()>0.5:
+            Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
+        else:
+            Simg = sketch_loader(os.path.join(self.root, 'sketch_max_512', fname))
         Cimg, Simg = RandomCrop(512)(Cimg, Simg)
         if random.random() < 0.5:
             Cimg, Simg = Cimg.transpose(Image.FLIP_LEFT_RIGHT), Simg.transpose(Image.FLIP_LEFT_RIGHT)

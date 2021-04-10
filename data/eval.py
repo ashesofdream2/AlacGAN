@@ -112,4 +112,4 @@ def CreateDataLoader(config):
 
     assert dataset
 
-    return data.DataLoader(dataset, batch_size=64, shuffle=True, num_workers=10, drop_last=False)
+    return data.DataLoader(dataset, batch_size=16, shuffle=True, num_workers=10, drop_last=False)

@@ -19,6 +19,10 @@ from data.train import CreateDataLoader as train_loader
 from data.eval import CreateDataLoader as val_loader
 from utils import create_logger, save_checkpoint, load_state, get_scheduler, AverageMeter, calculate_fid
 from models.standard import *
+from matplotlib import pyplot as plt
+from torchvision import transforms
+
+#%tensorboard --logdir ./
 
 parser = argparse.ArgumentParser(description='PyTorch Colorization Training')
 
@@ -57,7 +61,7 @@ def mask_gen():
 def main():
     global args, config, X
 
-    args = parser.parse_args()
+    args = parser.parse_args(args=[])
     print(args)
 
     with open(args.config) as f:
@@ -108,7 +112,9 @@ def main():
 
     last_iter = -1
     best_fid = 1e6
-
+    
+    to_image = transforms.ToPILImage()
+    
     if args.resume:
         best_fid, last_iter = load_state(args.resume, netG, netD, optimizerG, optimizerD)
 
@@ -166,6 +172,7 @@ def main():
 
             # train with fake
             with torch.no_grad():
+                print(real_sim.shape)
                 feat_sim = netI(real_sim).detach()
                 fake_cim = netG(real_sim, hint, feat_sim).detach()
 
@@ -265,13 +272,37 @@ def main():
                         )
 
         if curr_iter % config.print_img_freq == 0:
+        #if curr_iter % 100 == 0:
             with torch.no_grad():
                 fake = netG(fixed_sketch, fixed_hint, fixed_sketch_feat)
                 tb_logger.add_image('colored imgs',
                                     vutils.make_grid(fake.detach().mul(0.5).add(0.5), nrow=4),
                                     curr_iter)
+                im =vutils.make_grid(fake.detach().mul(0.5).add(0.5), nrow=4)
+                im = to_image(im)
+                plt.imshow(im)
+                plt.show()
+                plt.close()
 
-        if curr_iter % config.val_freq == 0:
+        
+        if curr_iter % config.eval_freq == 0 :
+            print("save")
+            save_checkpoint({
+                'step': curr_iter - 1,
+                'state_dictG': netG.state_dict(),
+                'state_dictD': netD.state_dict(),
+                'best_fid': best_fid,
+                'optimizerG': optimizerG.state_dict(),
+                'optimizerD': optimizerD.state_dict(),
+            }, False, config.save_path + '/ckpt')
+            print("save_end")
+            
+        if curr_iter < 10000:
+            eval_freq = 10000
+        else:
+            eval_freq = 2000
+        if curr_iter %  eval_freq == 0:
+            print("begin val")
             fid, var = validate(netG, netI)
             tb_logger.add_scalar('fid_val', fid, curr_iter)
             tb_logger.add_scalar('fid_variance', var, curr_iter)
@@ -288,6 +319,7 @@ def main():
                 'optimizerG': optimizerG.state_dict(),
                 'optimizerD': optimizerD.state_dict(),
             }, is_best, config.save_path + '/ckpt')
+            print("end")
 
         end = time.time()
 
@@ -295,14 +327,13 @@ def main():
 def validate(netG, netI):
     fids = []
     fid_value = 0
-    with torch.no_grad():
-        for _ in range(3):
-            fid = calculate_fid(netG, netI, val_loader(config), config, 2048)
-            print('FID: ', fid)
-            fid_value += fid
-            fids.append(fid)
-    fid_value /= 3
+    for _ in range(1):
+        fid = calculate_fid(netG, netI, val_loader(config), config, 2048)
+        print('FID: ', fid)
+        fid_value += fid
+        fids.append(fid)
+    fid_value /= 1
     return fid_value, np.var(fids)
 
-if __name__ == '__main__':
-    main()
+
+main()

@@ -105,7 +105,7 @@ def CreateDataLoader(config):
     STrans = transforms.Compose([
         RandomCrop( img_size ),
         transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+        transforms.Normalize((0.5), (0.5))
     ])
 
     dataset = ImageFolder(root=config.val_root, stransform=STrans)

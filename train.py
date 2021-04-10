@@ -295,11 +295,12 @@ def main():
 def validate(netG, netI):
     fids = []
     fid_value = 0
-    for _ in range(3):
-        fid = calculate_fid(netG, netI, val_loader(config), config, 2048)
-        print('FID: ', fid)
-        fid_value += fid
-        fids.append(fid)
+    with torch.no_grad():
+        for _ in range(3):
+            fid = calculate_fid(netG, netI, val_loader(config), config, 2048)
+            print('FID: ', fid)
+            fid_value += fid
+            fids.append(fid)
     fid_value /= 3
     return fid_value, np.var(fids)
 

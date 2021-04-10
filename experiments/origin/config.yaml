@@ -1,5 +1,5 @@
 train_root: /kaggle/input/sketch-gan
-val_root: /kaggle/input/sketch-gan/sketch_max_512
+val_root: /kaggle/input/sketch-gan/lineart/lineart
 
 workers: 2
 batch_size: 16

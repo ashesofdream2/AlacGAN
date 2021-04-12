@@ -5,7 +5,7 @@ import os.path
 import random
 import numbers
 import numpy as np
-from scipy.misc import fromimage
+#from scipy.misc import fromimage
 import torch.utils.data as data
 import torchvision.transforms as transforms
 from PIL import Image

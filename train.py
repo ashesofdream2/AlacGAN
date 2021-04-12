@@ -190,8 +190,8 @@ def main():
 
             errD_realer.backward(retain_graph=False)  # backward on score on real
 
-            #gradient_penalty = calc_gradient_penalty(netD, real_cim, fake_cim, feat_sim)
-            #gradient_penalty.backward()
+            gradient_penalty = calc_gradient_penalty(netD, real_cim, fake_cim, feat_sim)
+            gradient_penalty.backward()
 
             optimizerD.step()
 

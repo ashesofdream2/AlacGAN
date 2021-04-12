@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as M
+from models.spnorm import SpectralNorm
 
 VGG16_PATH = r'/kaggle/input/pytorch-model-zoo/vgg16-397923af.pth'
 I2V_PATH = r'/kaggle/input/sketch-gan/i2v.pth'
@@ -31,6 +32,29 @@ class ResNeXtBottleneck(nn.Module):
         x = self.shortcut.forward(x)
         return x + bottleneck
 
+class SNResNeXtBottleneck(nn.Module):
+    def __init__(self, in_channels=256, out_channels=256, stride=1, cardinality=32, dilate=1):
+        super(SNResNeXtBottleneck, self).__init__()
+        D = out_channels // 2
+        self.out_channels = out_channels
+        self.conv_reduce = SpectralNorm(nn.Conv2d(in_channels, D, kernel_size=1, stride=1, padding=0, bias=False))
+        self.conv_conv = SpectralNorm(nn.Conv2d(D, D, kernel_size=2 + stride, stride=stride, padding=dilate, dilation=dilate,
+                                   groups=cardinality,
+                                   bias=False))
+        self.conv_expand = SpectralNorm(nn.Conv2d(D, out_channels, kernel_size=1, stride=1, padding=0, bias=False))
+        self.shortcut = nn.Sequential()
+        if stride != 1:
+            self.shortcut.add_module('shortcut',
+                                     nn.AvgPool2d(2, stride=2))
+
+    def forward(self, x):
+        bottleneck = self.conv_reduce.forward(x)
+        bottleneck = F.leaky_relu(bottleneck, 0.2, True)
+        bottleneck = self.conv_conv.forward(bottleneck)
+        bottleneck = F.leaky_relu(bottleneck, 0.2, True)
+        bottleneck = self.conv_expand.forward(bottleneck)
+        x = self.shortcut.forward(x)
+        return x + bottleneck
 
 class NetG(nn.Module):
     def __init__(self, ngf=64):
@@ -129,35 +153,35 @@ class NetD(nn.Module):
     def __init__(self, ndf=64):
         super(NetD, self).__init__()
 
-        self.feed = nn.Sequential(nn.Conv2d(3, ndf, kernel_size=7, stride=1, padding=3, bias=False),  # 512
+        self.feed = nn.Sequential(SpectralNorm(nn.Conv2d(3, ndf, kernel_size=7, stride=1, padding=3, bias=False)),  # 512
                                   nn.LeakyReLU(0.2, True),
-                                  nn.Conv2d(ndf, ndf, kernel_size=4, stride=2, padding=1, bias=False),  # 256
-                                  nn.LeakyReLU(0.2, True),
-
-                                  ResNeXtBottleneck(ndf, ndf, cardinality=8, dilate=1),
-                                  ResNeXtBottleneck(ndf, ndf, cardinality=8, dilate=1, stride=2),  # 128
-                                  nn.Conv2d(ndf, ndf * 2, kernel_size=1, stride=1, padding=0, bias=False),
+                                  SpectralNorm(nn.Conv2d(ndf, ndf, kernel_size=4, stride=2, padding=1, bias=False)),  # 256
                                   nn.LeakyReLU(0.2, True),
 
-                                  ResNeXtBottleneck(ndf * 2, ndf * 2, cardinality=8, dilate=1),
-                                  ResNeXtBottleneck(ndf * 2, ndf * 2, cardinality=8, dilate=1, stride=2),  # 64
-                                  nn.Conv2d(ndf * 2, ndf * 4, kernel_size=1, stride=1, padding=0, bias=False),
+                                  SNResNeXtBottleneck(ndf, ndf, cardinality=8, dilate=1),
+                                  SNResNeXtBottleneck(ndf, ndf, cardinality=8, dilate=1, stride=2),  # 128
+                                  SpectralNorm(nn.Conv2d(ndf, ndf * 2, kernel_size=1, stride=1, padding=0, bias=False)),
                                   nn.LeakyReLU(0.2, True),
 
-                                  ResNeXtBottleneck(ndf * 4, ndf * 4, cardinality=8, dilate=1),
-                                  ResNeXtBottleneck(ndf * 4, ndf * 4, cardinality=8, dilate=1, stride=2)  # 32
+                                  SNResNeXtBottleneck(ndf * 2, ndf * 2, cardinality=8, dilate=1),
+                                  SNResNeXtBottleneck(ndf * 2, ndf * 2, cardinality=8, dilate=1, stride=2),  # 64
+                                  SpectralNorm(nn.Conv2d(ndf * 2, ndf * 4, kernel_size=1, stride=1, padding=0, bias=False)),
+                                  nn.LeakyReLU(0.2, True),
+
+                                  SNResNeXtBottleneck(ndf * 4, ndf * 4, cardinality=8, dilate=1),
+                                  SNResNeXtBottleneck(ndf * 4, ndf * 4, cardinality=8, dilate=1, stride=2)  # 32
                                   )
 
-        self.feed2 = nn.Sequential(nn.Conv2d(ndf * 12, ndf * 8, kernel_size=3, stride=1, padding=1, bias=False),  # 32
+        self.feed2 = nn.Sequential(SpectralNorm(nn.Conv2d(ndf * 12, ndf * 8, kernel_size=3, stride=1, padding=1, bias=False)),  # 32
                                    nn.LeakyReLU(0.2, True),
-                                   ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
-                                   ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 16
-                                   ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
-                                   ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 8
-                                   ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
+                                   SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
+                                   SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 16
+                                   SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
+                                   SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 8
+                                   SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
                                    #ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 4
                                    #ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
-                                   nn.Conv2d(ndf * 8, ndf * 8, kernel_size=4, stride=1, padding=0, bias=False),  # 1
+                                   SpectralNorm(nn.Conv2d(ndf * 8, ndf * 8, kernel_size=4, stride=1, padding=0, bias=False)),  # 1
                                    nn.LeakyReLU(0.2, True)
                                    )
 

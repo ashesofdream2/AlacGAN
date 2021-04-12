@@ -185,7 +185,7 @@ class NetD(nn.Module):
                                    nn.LeakyReLU(0.2, True)
                                    )
 
-        self.out = nn.Linear(512, 1)
+        self.out = SpectralNorm(nn.Linear(512, 1))
 
     def forward(self, color, sketch_feat):
         x = self.feed(color)

@@ -1,4 +1,3 @@
-import argparse
 import os
 import random
 import yaml
@@ -19,13 +18,14 @@ from data.train import CreateDataLoader as train_loader
 from data.eval import CreateDataLoader as val_loader
 from utils import create_logger, save_checkpoint, load_state, get_scheduler, AverageMeter, calculate_fid
 from models.standard import *
+
 from matplotlib import pyplot as plt
 from torchvision import transforms
 
 #%tensorboard --logdir ./
 
 parser = argparse.ArgumentParser(description='PyTorch Colorization Training')
-
+#./experiments/origin/ckpt.pth.tar
 parser.add_argument('--config', default='experiments/origin/config.yaml')
 parser.add_argument('--resume', default='', type=str, help='path to checkpoint')
 
@@ -172,7 +172,7 @@ def main():
 
             # train with fake
             with torch.no_grad():
-                print(real_sim.shape)
+                #print(real_sim.shape)
                 feat_sim = netI(real_sim).detach()
                 fake_cim = netG(real_sim, hint, feat_sim).detach()
 
@@ -187,10 +187,10 @@ def main():
 
             errD_realer = -1 * errD_real + errD_real.pow(2) * config.drift
 
-            errD_realer.backward(retain_graph=True)  # backward on score on real
+            errD_realer.backward(retain_graph=False)  # backward on score on real
 
-            gradient_penalty = calc_gradient_penalty(netD, real_cim, fake_cim, feat_sim)
-            gradient_penalty.backward()
+            #gradient_penalty = calc_gradient_penalty(netD, real_cim, fake_cim, feat_sim)
+            #gradient_penalty.backward()
 
             optimizerD.step()
 
@@ -246,7 +246,8 @@ def main():
 
         optimizerG.step()
         batch_time.update(time.time() - end)
-
+        
+        #torch.cuda.empty_cache()
         ############################
         # (3) Report & 100 Batch checkpoint
         ############################
@@ -285,23 +286,24 @@ def main():
                 plt.close()
 
         
-        if curr_iter % config.eval_freq == 0 :
-            print("save")
-            save_checkpoint({
-                'step': curr_iter - 1,
-                'state_dictG': netG.state_dict(),
-                'state_dictD': netD.state_dict(),
-                'best_fid': best_fid,
-                'optimizerG': optimizerG.state_dict(),
-                'optimizerD': optimizerD.state_dict(),
-            }, False, config.save_path + '/ckpt')
-            print("save_end")
+#         if curr_iter % config.val_freq == 0 :
+#             print("save")
+#             save_checkpoint({
+#                 'step': curr_iter - 1,
+#                 'state_dictG': netG.state_dict(),
+#                 'state_dictD': netD.state_dict(),
+#                 'best_fid': best_fid,
+#                 'optimizerG': optimizerG.state_dict(),
+#                 'optimizerD': optimizerD.state_dict(),
+#             }, False, config.save_path + '/ckpt')
+#             print("save_end")
             
-        if curr_iter < 10000:
-            eval_freq = 10000
+        if curr_iter < 14000:
+            eval_freq = 20000
         else:
             eval_freq = 2000
-        if curr_iter %  eval_freq == 0:
+        #eval_freq =2
+        if curr_iter % eval_freq == 0:
             print("begin val")
             fid, var = validate(netG, netI)
             tb_logger.add_scalar('fid_val', fid, curr_iter)
@@ -337,3 +339,4 @@ def validate(netG, netI):
 
 
 main()
+

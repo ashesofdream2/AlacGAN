@@ -155,8 +155,8 @@ class NetD(nn.Module):
                                    ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
                                    ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 8
                                    ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
-                                   ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 4
-                                   ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
+                                   #ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 4
+                                   #ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
                                    nn.Conv2d(ndf * 8, ndf * 8, kernel_size=4, stride=1, padding=0, bias=False),  # 1
                                    nn.LeakyReLU(0.2, True)
                                    )

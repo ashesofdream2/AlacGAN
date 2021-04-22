@@ -226,11 +226,11 @@ class ImageFolder(data.Dataset):
         Cimg = color_loader(os.path.join(self.root, 'illustrations_resized/illustrations_resized/', fname))
         kind = random.randint(1,2)
         if kind == 1:
-            Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa', fname))
+            Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
         elif kind == 2:
             Simg =  sketch_loader(os.path.join(self.root, 'pssketch', fname))
         else:
-            #Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
+            Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa', fname))
             pass
         Cimg, Simg = RandomCrop(512)(Cimg, Simg)
         if random.random() < 0.5:

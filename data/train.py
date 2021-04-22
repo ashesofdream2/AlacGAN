@@ -230,7 +230,7 @@ class ImageFolder(data.Dataset):
         elif kind == 2:
             Simg =  sketch_loader(os.path.join(self.root, 'pssketch', fname))
         else:
-            Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa', fname))
+            #Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa', fname))
             pass
         Cimg, Simg = RandomCrop(512)(Cimg, Simg)
         if random.random() < 0.5:

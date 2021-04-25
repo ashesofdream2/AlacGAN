@@ -18,6 +18,11 @@ IMG_EXTENSIONS = [
     '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP',
 ]
 
+IMG_USELESS = [
+    '1354.png','3684.png','4950.png','13225.png',
+    '14766.png','16086.png','17589.png','21142.png',
+    '21146.png','21148.png','21385.png','21618.png'
+]
 
 class RandomCrop(object):
     """Crops the given PIL.Image at a random location to have a region of
@@ -101,6 +106,8 @@ def make_dataset(root):
     for _, __, fnames in sorted(os.walk(os.path.join(root, 'illustrations_resized_final/illustrations_resized_final'))):
         for fname in fnames:
             if is_image_file(fname):
+                if fname in IMG_USELESS:
+                    continue
                 images.append(fname)
     return images
 

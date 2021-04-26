@@ -103,7 +103,7 @@ def is_image_file(filename):
 def make_dataset(root):
     images = []
 
-    for _, __, fnames in sorted(os.walk(os.path.join(root, 'illustrations_resized_final/illustrations_resized_final'))):
+    for _, __, fnames in sorted(os.walk(os.path.join(root, 'illustrations_remake'))):
         for fname in fnames:
             if is_image_file(fname):
                 if fname in IMG_USELESS:
@@ -230,14 +230,14 @@ class ImageFolder(data.Dataset):
 
     def __getitem__(self, index):
         fname = self.imgs[index]
-        Cimg = color_loader(os.path.join(self.root, 'illustrations_resized/illustrations_resized/', fname))
+        Cimg = color_loader(os.path.join(self.root, 'illustrations_remake', fname))
         kind = random.randint(1,2)
         if kind == 1:
             Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
         elif kind == 2:
-            Simg =  sketch_loader(os.path.join(self.root, 'pssketch', fname))
+            Simg =  sketch_loader(os.path.join(self.root, 'line_distiller', fname))
         else:
-            #Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa', fname))
+            #Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa_torch', fname))
             pass
         Cimg, Simg = RandomCrop(512)(Cimg, Simg)
         if random.random() < 0.5:

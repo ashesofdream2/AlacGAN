@@ -106,8 +106,8 @@ def make_dataset(root):
     for _, __, fnames in sorted(os.walk(os.path.join(root, 'illustrations_remake'))):
         for fname in fnames:
             if is_image_file(fname):
-                if fname in IMG_USELESS:
-                    continue
+#                 if fname in IMG_USELESS:
+#                     continue
                 images.append(fname)
     return images
 

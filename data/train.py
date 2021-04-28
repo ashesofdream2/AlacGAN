@@ -231,13 +231,13 @@ class ImageFolder(data.Dataset):
     def __getitem__(self, index):
         fname = self.imgs[index]
         Cimg = color_loader(os.path.join(self.root, 'illustrations_remake', fname))
-        kind = random.randint(1,2)
+        kind = random.randint(1,3)
         if kind == 1:
-            Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
+            Simg = sketch_loader(os.path.join(self.root, '0.3XDoG', fname))
         elif kind == 2:
-            Simg =  sketch_loader(os.path.join(self.root, '0.4XDoG', fname))
+            Simg = sketch_loader(os.path.join(self.root, '0.4XDoG', fname))
         else:
-            #Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa_torch', fname))
+            Simg = sketch_loader(os.path.join(self.root, '0.5XDoG', fname))
             #Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
             pass
         Cimg, Simg = RandomCrop(512)(Cimg, Simg)
@@ -257,7 +257,8 @@ def CreateDataLoader(config):
 
     # folder dataset
     CTrans = transforms.Compose([
-        transforms.Scale(config.image_size, Image.BICUBIC),
+        #transforms.Scale(config.image_size, Image.BICUBIC),
+        transforms.Resize(config.image_size, Image.BICUBIC),
         transforms.ToTensor(),
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])

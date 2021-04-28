@@ -233,9 +233,9 @@ class ImageFolder(data.Dataset):
         Cimg = color_loader(os.path.join(self.root, 'illustrations_remake', fname))
         kind = random.randint(1,2)
         if kind == 1:
-            Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa_torch', fname))
+            Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
         elif kind == 2:
-            Simg =  sketch_loader(os.path.join(self.root, 'line_distiller', fname))
+            Simg =  sketch_loader(os.path.join(self.root, '0.4XDoG', fname))
         else:
             #Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa_torch', fname))
             #Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))

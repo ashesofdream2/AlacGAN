@@ -238,7 +238,7 @@ class ImageFolder(data.Dataset):
 #         elif kind == 2:
 #             Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa_torch', fname))
             #Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))
-        Simg = sketch_loader(os.path.join(self.root, '0.'+kind+'XDoG', fname))
+        Simg = sketch_loader(os.path.join(self.root, '0.'+str(kind)+'XDoG', fname))
         Cimg, Simg = RandomCrop(512)(Cimg, Simg)
         if random.random() < 0.5:
             Cimg, Simg = Cimg.transpose(Image.FLIP_LEFT_RIGHT), Simg.transpose(Image.FLIP_LEFT_RIGHT)

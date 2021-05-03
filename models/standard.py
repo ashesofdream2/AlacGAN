@@ -49,11 +49,17 @@ class SNResNeXtBottleneck(nn.Module):
                                      nn.AvgPool2d(2, stride=2))
 
     def forward(self, x):
-        bottleneck = self.conv_reduce.forward(x)
+#         bottleneck = self.conv_reduce.forward(x)
+#         bottleneck = F.leaky_relu(bottleneck, 0.2, True)
+#         bottleneck = self.conv_conv.forward(bottleneck)
+#         bottleneck = F.leaky_relu(bottleneck, 0.2, True)
+#         bottleneck = self.conv_expand.forward(bottleneck)
+#         x = self.shortcut.forward(x)
+        bottleneck = self.conv_reduce(x)
         bottleneck = F.leaky_relu(bottleneck, 0.2, True)
-        bottleneck = self.conv_conv.forward(bottleneck)
+        bottleneck = self.conv_conv(bottleneck)
         bottleneck = F.leaky_relu(bottleneck, 0.2, True)
-        bottleneck = self.conv_expand.forward(bottleneck)
+        bottleneck = self.conv_expand(bottleneck)
         x = self.shortcut.forward(x)
         return x + bottleneck
 

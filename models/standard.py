@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models as M
 #from torch.nn.utils import spectral_norm as SpectralNorm
-from spnorm import SpectralNorm
+from .spnorm import SpectralNorm
 
 VGG16_PATH = r'/kaggle/input/pytorch-model-zoo/vgg16-397923af.pth'
 I2V_PATH = r'/kaggle/input/sketch-gan/i2v.pth'

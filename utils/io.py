@@ -55,6 +55,9 @@ def load_state(path, netG, netD, optimizerG, optimizerD):
         if checkpoint['iter_record'] !=None:
             iter_record = checkpoint['iter_record']
             fid_record  = checkpoint['fid_record']
+            print("load fid_record successfully")
+        else:
+            print("load fid_record failed")
 
         return best_fid, last_iter
     else:

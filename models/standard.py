@@ -186,8 +186,8 @@ class NetD(nn.Module):
                                    SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
                                    SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 8
                                    SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
-                                   #ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 4
-                                   #ResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
+                                   SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1, stride=2),  # 4
+                                   SNResNeXtBottleneck(ndf * 8, ndf * 8, cardinality=8, dilate=1),
                                    SpectralNorm(nn.Conv2d(ndf * 8, ndf * 8, kernel_size=4, stride=1, padding=0, bias=False)),  # 1
                                    nn.LeakyReLU(0.2, True)
                                    )
@@ -264,4 +264,4 @@ class NetI(nn.Module):
     def forward(self, images):
         images = F.avg_pool2d(images, 2, 2)
         images = images.mul(0.5).add(0.5).mul(255)
-        return self.model(images.expand(-1, 3, 128, 128) - self.mean)
+        return self.model(images.expand(-1, 3, 256, 256) - self.mean)

@@ -2,10 +2,10 @@ train_root: /kaggle/input/sketch-gan
 val_root: /kaggle/input/sketch-gan/lineart/lineart
 
 workers: 2
-batch_size: 16
-image_size: 256
+batch_size: 4
+image_size: 512
 
-val_freq: 1000
+val_freq: 8000
 print_freq: 100
 print_img_freq: 100
 
@@ -19,7 +19,7 @@ lrD: 0.0001
 lr_scheduler:
     type: STEP
 
-    lr_steps: [29728]
+    lr_steps: [150000]
     lr_mults: [0.1]
 
     base_lr: 0.0001

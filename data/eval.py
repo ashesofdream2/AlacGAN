@@ -88,7 +88,7 @@ class ImageFolder(data.Dataset):
     def __getitem__(self, index):
         fname = self.imgs[index]  # random.randint(1, 3
         Simg = sketch_loader(os.path.join(self.root, fname))
-        #Simg = resize_by(Simg, img_size )
+        Simg = resize_by(Simg, img_size )
         if random.random() < 0.5:
             Simg = Simg.transpose(Image.FLIP_LEFT_RIGHT)
         Simg = self.stransform(Simg)

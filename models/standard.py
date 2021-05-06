@@ -196,7 +196,6 @@ class NetD(nn.Module):
 
     def forward(self, color, sketch_feat):
         x = self.feed(color)
-
         x = self.feed2(torch.cat([x, sketch_feat], 1))
         #out = x.view(color.size(0), -1)
         out = self.out(x.view(color.size(0), -1))

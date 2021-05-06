@@ -24,7 +24,7 @@ def save_checkpoint(state, is_best, filename):
         shutil.copyfile(filename + '.pth.tar', filename + '_best.pth.tar')
 
 
-def load_state(path, netG, netD, optimizerG, optimizerD):
+def load_state(path, netG, netD, optimizerG, optimizerD,load_fid=False):
     def map_func(storage, location):
         return storage.cuda()
 

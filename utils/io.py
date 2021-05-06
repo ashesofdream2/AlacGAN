@@ -52,12 +52,13 @@ def load_state(path, netG, netD, optimizerG, optimizerD):
         for k in missing_keys:
             print(f'caution: missing netD keys from checkpoint {path}: {k}')
         
-        if checkpoint['iter_record'] !=None:
+        if load_fid == True and checkpoint.has_key("iter_record"):
             iter_record = checkpoint['iter_record']
             fid_record  = checkpoint['fid_record']
             print("load fid_record successfully")
+            return best_fid, last_iter,iter_record,fid_record
         else:
-            print("load fid_record failed")
+            print("not load fid_record")
 
         return best_fid, last_iter
     else:

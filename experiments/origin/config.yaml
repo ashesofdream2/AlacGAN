@@ -25,7 +25,7 @@ lr_scheduler:
     base_lr: 0.0001
     warmup_steps: 0
     warmup_lr: 0
-    max_iter: 62500
+    max_iter: 250000
 
 
 diters: 1 # number of D iters per G iter

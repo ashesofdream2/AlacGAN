@@ -35,5 +35,5 @@ advW: 0.0001
 gpW: 10 # gradient penalty weight
 drift: 0.001 # wasserstein distance drift weight
 
-target_npz: ../input/sketch-gan/fid_stats_color.npz
+target_npz: ../input/sketch-gan/fid_stats_color_512.npz
 corps: 2 # num of corps per image for evaluation

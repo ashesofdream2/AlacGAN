@@ -234,7 +234,8 @@ class ImageFolder(data.Dataset):
         kind = random.randint(1,2)
         if kind in [1]:
             thick = str(random.randint(3,5))
-            Simg = sketch_loader(os.path.join(self.root, '0.'+thick+'XDoG', fname))
+            #Simg = sketch_loader(os.path.join(self.root, '0.'+thick+'XDoG', fname))
+            Simg = sketch_loader(os.path.join(self.root, "XDoG/0."+thick, fname))
         elif kind == 2:
             Simg = sketch_loader(os.path.join(self.root, 'sketch_kersa_torch', fname))
             #Simg = sketch_loader(os.path.join(self.root, 'illustrations_resized_final/illustrations_resized_final', fname))

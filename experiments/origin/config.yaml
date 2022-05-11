@@ -3,7 +3,7 @@ val_root: /kaggle/input/sketch-gan/lineart/lineart
 
 workers: 2
 batch_size: 4
-image_size: 512
+image_size: 256
 
 val_freq: 8000
 print_freq: 100
